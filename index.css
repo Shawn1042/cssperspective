@@ -1,0 +1,220 @@
+body {
+  background-color: #000;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 75px;
+  perspective: 10em;
+  perspective-origin: 50% calc(50% - 2em);
+}
+
+.scene {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: sceneRotate 30s infinite linear;
+}
+@keyframes sceneRotate {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+#scene-2 {
+  top: 6.5em;
+  font-size: 10px;
+  animation: flash 7.929487s infinite ease-out;
+  animation-delay: 1.25s;
+  opacity: 0;
+}
+@keyframes flash {
+  from {
+    opacity: 0;
+  }
+  92% {
+    opacity: 0;
+  }
+  93% {
+    opacity: 0.6;
+  }
+  94% {
+    opacity: 0.2;
+  }
+  96% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+#scene-2 .ball,
+#scene-2 .cube {
+  animation-delay: 0.732s;
+}
+
+.ball {
+  border-radius: 50%;
+  background-image: radial-gradient(circle at top, rgba(248, 6, 6, 0.834), 60%, #000);
+  width: 1em;
+  height: 1em;
+  position: absolute;
+  right: -0.5em;
+  bottom: 0.3em;
+  animation: ballBounce 0.55s cubic-bezier(0, 0.2, 0.15, 1.005) infinite alternate 2.75s, ballSquash 0.55s cubic-bezier(0, 0.2, 0.15, 1.005) infinite alternate 2.75s, sceneRotate 30s infinite linear reverse, ballAppearing 2.75s ease-in;
+}
+@keyframes ballSquash {
+  0%, 3% {
+    height: 0.6em;
+    opacity: 0.8;
+  }
+  8% {
+    height: 1em;
+  }
+  93.9%, to {
+    animation-timing-function: ease-in;
+  }
+}
+@keyframes ballBounce {
+  to {
+    bottom: 2.5em;
+    animation-timing-function: ease-in-out;
+  }
+}
+@keyframes ballAppearing {
+  from {
+    opacity: 0;
+  }
+  from, 40% {
+    bottom: -0.5em;
+  }
+  55% {
+    bottom: -1em;
+    box-shadow: none;
+  }
+  55%, 58% {
+    height: 1em;
+  }
+  56% {
+    height: 0.8em;
+  }
+  25%, 40% {
+    opacity: 0.6;
+  }
+  55% {
+    opacity: 0.4;
+  }
+  from, 25% {
+    box-shadow: 0 0 0.2em 0.2em #9ff, 0 0 0.1em 0.5em #9ff inset;
+  }
+  35%, 45% {
+    box-shadow: 0 0 0.1em 0 #e25822, 0 0 0.1em 0.5em #e25822 inset;
+  }
+  45% {
+    box-shadow: 0 0 0.1em 0 transparent, 0 0 0.1em 0.5em transparent inset;
+  }
+  75%, 84% {
+    bottom: 2.5em;
+  }
+  99% {
+    bottom: 0.7em;
+  }
+}
+
+.ballShadow {
+  background-image: radial-gradient(#000, transparent 50%);
+  width: 100%;
+  height: 100%;
+  transform: scale(1);
+  opacity: 0;
+  position: absolute;
+  animation: ballShadow 0.55s cubic-bezier(0, 0.2, 0.15, 1.005) infinite alternate 2.75s;
+}
+@keyframes ballShadow {
+  from {
+    opacity: 1;
+  }
+  93.9%, to {
+    transform: scale(2);
+    opacity: 0.4;
+    animation-timing-function: ease-in;
+  }
+}
+
+.cube {
+  position: absolute;
+  bottom: -1em;
+  left: -1em;
+  transform-style: preserve-3d;
+  animation: cubeHeight 0.55s cubic-bezier(0, 0.2, 0.15, 1.005) infinite alternate 2.75s;
+}
+@keyframes cubeHeight {
+  from {
+    height: 1.3em;
+  }
+  8%, 93.9% {
+    height: 2em;
+  }
+}
+.cube .top,
+.cube .bottom, .cube {
+  width: 2em;
+  height: 2em;
+}
+.cube .left,
+.cube .right,
+.cube .front,
+.cube .back {
+  position: absolute;
+  background-color: rgba(255, 105, 180, 0.0274509804);
+}
+.cube .left,
+.cube .right,
+.cube .front,
+.cube .back,
+.cube .top {
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.6666666667) inset;
+  filter: blur(1px);
+  border-radius: 5px;
+}
+.cube .left,
+.cube .right,
+.cube .front,
+.cube .back {
+  width: 100%;
+  height: 100%;
+}
+.cube .front {
+  transform: translateZ(1em);
+}
+.cube .right {
+  transform: rotateY(90deg) translateZ(1em);
+}
+.cube .back {
+  transform: rotateY(180deg) translateZ(1em);
+}
+.cube .left {
+  transform: rotateY(270deg) translateZ(1em);
+}
+.cube .top {
+  transform: translateY(-50%) rotateX(90deg);
+  background-color: rgba(255, 218, 225, 0.4039215686);
+}
+.cube .bottom {
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4666666667);
+  transform: translateY(50%) rotateX(90deg) scale(1.05);
+  box-shadow: 0 0 0.3em -0.1em #fff inset, 0 -0.06em 0.5em -0.05em rgba(255, 255, 255, 0.9333333333), 0 0px 0.08em -0.08em #fff;
+  filter: blur(0.04em);
+}
+
+.floor {
+  width: 15em;
+  height: 15em;
+  background-image: radial-gradient(transparent, #000 75%), repeating-conic-gradient(from 45deg, #111 0deg 90deg, #222 90deg 180deg);
+  background-size: 100%, 1em 1em;
+  position: absolute;
+  top: 1em;
+  transform: translate(-50%, -50%) rotateX(90deg);
+}/*# sourceMappingURL=index.css.map */

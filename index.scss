@@ -1,0 +1,318 @@
+$rotate-speed: 30s;
+$bounce-speed: 0.55s;
+$appearing-delay: $bounce-speed * 5;
+
+// - Original colors
+// $ball-color: lightBlue;
+// $cube-color: #0ff7; // aqua
+// $cube-top-color: #0ff7;
+
+// - Dark colors
+// $ball-color: honeyDew;
+// $cube-color: #00808020; // teal
+// $cube-top-color: #e0ffff6d; // lightCyan
+
+// - Light colors
+// $ball-color: lavenderBlush;
+// $cube-color: #8ceaf077;
+// $cube-top-color: #fff0f5aa;
+
+// - Contrasted colors
+$ball-color: rgba(248, 6, 6, 0.834);
+$cube-color: #ff69b407;
+$cube-top-color: #ffdae167;
+
+$ball-bounce-start: 8%;
+$ball-bounce-end: 93.9%;
+
+$ball-bounce-height: 2.5em;
+$ball-bounce-impact: 0.7em;
+$cube-size: 2em;
+
+$ball-size: 1em;
+
+$test-bezier: cubic-bezier(0, 0.2, 0.15, 1.005);
+
+body {
+  background-color: #000;
+
+  min-height: 100vh;
+  overflow: hidden; // prevents horizontal scroll appearing due to perpective
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 75px;
+  perspective: 10em;
+  perspective-origin: 50% calc(50% - 2em);
+}
+
+.scene {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: sceneRotate $rotate-speed infinite linear;
+
+  @keyframes sceneRotate {
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+}
+
+#scene-2 {
+  $modifier: 7.5;
+  top: #{$modifier - 1}em;
+  font-size: #{75px / $modifier};
+
+  $lightning-speed: 7.929487s;
+
+  animation: flash $lightning-speed infinite ease-out;
+  animation-delay: $appearing-delay - 1.5s;
+  opacity: 0;
+
+  @keyframes flash {
+    from {
+      opacity: 0;
+    }
+    92% {
+      opacity: 0;
+    }
+    93% {
+      opacity: 0.6;
+    }
+    94% {
+      opacity: 0.2;
+    }
+    96% {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .ball,
+  .cube {
+    animation-delay: 0.732s;
+  }
+}
+
+.ball {
+  border-radius: 50%;
+  background-image: radial-gradient(circle at top, $ball-color, 60%, #000);
+
+  width: $ball-size;
+  height: $ball-size;
+
+  position: absolute;
+  right: -$ball-size / 2;
+
+  bottom: 1em - $ball-bounce-impact;
+
+  animation: ballBounce $bounce-speed $test-bezier infinite alternate
+      $appearing-delay,
+    ballSquash $bounce-speed $test-bezier infinite alternate $appearing-delay,
+    sceneRotate $rotate-speed infinite linear reverse,
+    ballAppearing $appearing-delay ease-in;
+
+  @keyframes ballSquash {
+    0%,
+    3% {
+      height: $ball-size * 0.6;
+      opacity: 0.8;
+    }
+    #{$ball-bounce-start} {
+      height: $ball-size;
+    }
+    #{$ball-bounce-end},
+    to {
+      animation-timing-function: ease-in;
+    }
+  }
+
+  @keyframes ballBounce {
+    to {
+      bottom: $ball-bounce-height;
+      animation-timing-function: ease-in-out;
+    }
+  }
+
+  @keyframes ballAppearing {
+    from {
+      opacity: 0;
+    }
+    from,
+    40% {
+      bottom: -0.5em;
+    }
+    55% {
+      bottom: -1em;
+      box-shadow: none;
+    }
+    55%,
+    58% {
+      height: $ball-size;
+    }
+    56% {
+      height: $ball-size * 0.8;
+    }
+    25%,
+    40% {
+      opacity: 0.6;
+    }
+    55% {
+      opacity: 0.4;
+    }
+    from,
+    25% {
+      box-shadow: 0 0 0.2em 0.2em #9ff, 0 0 0.1em 0.5em #9ff inset;
+    }
+    35%,
+    45% {
+      box-shadow: 0 0 0.1em 0 #e25822, 0 0 0.1em 0.5em #e25822 inset;
+    }
+    45% {
+      box-shadow: 0 0 0.1em 0 transparent, 0 0 0.1em 0.5em transparent inset;
+    }
+    75%,
+    84% {
+      bottom: $ball-bounce-height;
+    }
+    99% {
+      bottom: $ball-bounce-impact;
+    }
+  }
+}
+
+.ballShadow {
+  background-image: radial-gradient(#000, transparent 50%);
+
+  width: 100%;
+  height: 100%;
+
+  transform: scale(1);
+  opacity: 0;
+
+  position: absolute;
+  animation: ballShadow $bounce-speed $test-bezier infinite alternate
+    $appearing-delay;
+
+  @keyframes ballShadow {
+    from {
+      opacity: 1;
+    }
+    #{$ball-bounce-end},
+    to {
+      transform: scale(2);
+      opacity: 0.4;
+      animation-timing-function: ease-in;
+    }
+  }
+}
+
+.cube {
+  position: absolute;
+  bottom: -$cube-size / 2;
+  left: -$cube-size / 2;
+
+  transform-style: preserve-3d;
+  animation: cubeHeight $bounce-speed $test-bezier infinite alternate
+    $appearing-delay;
+
+  @keyframes cubeHeight {
+    from {
+      height: $cube-size - $ball-bounce-impact;
+    }
+    #{$ball-bounce-start},
+    #{$ball-bounce-end} {
+      height: $cube-size;
+    }
+  }
+
+  .top,
+  .bottom,
+  & {
+    width: $cube-size;
+    height: $cube-size;
+  }
+
+  .left,
+  .right,
+  .front,
+  .back {
+    position: absolute;
+    background-color: $cube-color;
+  }
+
+  .left,
+  .right,
+  .front,
+  .back,
+  .top {
+    box-shadow: 0 0 0.5em #000a inset;
+
+    filter: blur(1px); // bit of a mysterious vibe
+    border-radius: 5px; // another unnecessary but mysterious shapeshifting
+  }
+
+  .left,
+  .right,
+  .front,
+  .back {
+    width: 100%;
+    height: 100%;
+  }
+
+  .front {
+    transform: translateZ($cube-size / 2);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ($cube-size / 2);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ($cube-size / 2);
+  }
+  .left {
+    transform: rotateY(270deg) translateZ($cube-size / 2);
+  }
+
+  .top {
+    transform: translateY(-50%) rotateX(90deg);
+
+    background-color: $cube-top-color;
+  }
+
+  .bottom {
+    position: absolute;
+    bottom: 0;
+
+    // - Original look
+    // transform: translateY(50%) rotateX(90deg);
+    background-color: #0007;
+    // box-shadow: 0 0 0.5em #000;
+
+    transform: translateY(50%) rotateX(90deg) scale(1.05);
+    // background-color: #000c;
+    box-shadow: 0 0 0.3em -0.1em #fff inset, 0 -0.06em 0.5em -0.05em #fffe,
+      0 0px 0.08em -0.08em #fff;
+
+    filter: blur(0.04em);
+  }
+}
+
+.floor {
+  width: 15em;
+  height: 15em;
+
+  background: {
+    image: radial-gradient(transparent, #000 75%),
+      repeating-conic-gradient(from 45deg, #111 0deg 90deg, #222 90deg 180deg);
+    size: 100%, 1em 1em;
+  }
+
+  position: absolute;
+  top: 1em;
+
+  transform: translate(-50%, -50%) rotateX(90deg);
+}
